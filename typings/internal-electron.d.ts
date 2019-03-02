@@ -81,6 +81,10 @@ declare namespace ElectronInternal {
     once(channel: string, listener: (event: IpcMainInternalEvent, ...args: any[]) => void): this;
   }
 
+  interface RemoteInternal extends Electron.Remote {
+    getGuestWebContents(guestInstanceId: number): Electron.WebContents;
+  }
+
   interface WebFrameInternal extends Electron.WebFrame {
     getWebFrameId(window: Window): number;
     allowGuestViewElementDefinition(window: Window, context: any): void;
