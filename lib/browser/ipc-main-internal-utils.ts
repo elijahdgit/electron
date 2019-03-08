@@ -23,3 +23,21 @@ export const handle = function <T extends IPCHandler> (channel: string, handler:
     })
   })
 }
+
+let nextId = 0
+
+export function invoke<T> (sender: any, command: string, ...args: any[]) {
+  return new Promise<T>((resolve, reject) => {
+    const requestId = ++nextId
+    ipcMainInternal.once(`${command}_RESPONSE_${requestId}`, (
+      _event, error: Electron.SerializedError, result: any
+    ) => {
+      if (error) {
+        reject(errorUtils.deserialize(error))
+      } else {
+        resolve(result)
+      }
+    })
+    sender._sendInternal(command, requestId, ...args)
+  })
+}
